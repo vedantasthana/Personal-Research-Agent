@@ -1,0 +1,33 @@
+# API Framework
+fastapi==0.110.0
+uvicorn==0.29.0
+
+# OpenAI SDK (official new version)
+openai==1.14.3
+
+# Vector Store
+chromadb==0.4.24
+
+# PDF extraction
+PyPDF2==3.0.1
+
+# GitHub extraction
+GitPython==3.1.42
+
+# HTML extraction
+beautifulsoup4==4.12.3
+trafilatura==1.7.0
+
+# Chunking / parsing
+tiktoken==0.6.0
+regex==2024.4.16
+
+# Code parsing (optional for AST-based chunks)
+tree_sitter==0.21.3
+
+# Testing
+pytest==8.1.1
+
+# Utilities
+python-dotenv==1.0.1
+requests==2.31.0
