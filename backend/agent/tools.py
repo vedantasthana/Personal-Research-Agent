@@ -1,4 +1,9 @@
-from typing import Callable, Dict
+from typing import Any, Callable, Dict, List
+
+from rag.retriever import Retriever
+from rag.context_builder import build_context
+from ingestion.embedder import embed_texts
+from mcp_tools import repo_tools
 
 
 class ToolsRegistry:
@@ -18,31 +23,42 @@ registry = ToolsRegistry()
 
 
 # ---- Example stub tool implementations ----
-def repo_read_file_tool(path: str) -> str:
-    """Very simple file reader tool. Path is relative to backend root."""
-    import os
-
-    try:
-        # You can adjust the base dir if needed
-        full_path = os.path.abspath(path)
-        with open(full_path, "r") as f:
-            return f"Contents of {full_path}:\n\n" + f.read()
-    except Exception as e:
-        return f"[repo_read_file] Failed to read {path}: {e}"
-
-
-def repo_run_tests_tool(_: str) -> str:
-    """Stub for running tests. Extend later to actually run pytest or similar."""
-    # You can later implement subprocess.run(["pytest", "-q"], ...)
-    return "[repo_run_tests] Test runner not implemented yet."
-
-
-def repo_apply_patch_tool(_: str) -> str:
-    """Stub for applying patches."""
-    return "[repo_apply_patch] Patch application not implemented yet."
+def repo_read_file(self, rel_path: str) -> Dict[str, Any]:
+    """
+    Read file contents from repository.
+    """
+    content = repo_tools.read_file(rel_path)
+    return {"path": rel_path, "content": content}
+def repo_list_files(self, glob_pattern: str) -> Dict[str, Any]:
+    """
+    List files under the repo matching a glob pattern (e.g., '**/*.py').
+    """
+    files = repo_tools.list_files(glob_pattern or "**/*.py")
+    return {"glob": glob_pattern, "files": files}
+def repo_search_code(self, query: str) -> Dict[str, Any]:
+    """
+    Search code for a string and return top matches.
+    """
+    hits = repo_tools.search_code(query)
+    return {"query": query, "hits": hits}
+def repo_apply_patch(self, patch_text: str) -> Dict[str, Any]:
+    """
+    Apply patch to repo using 'patch -p1'.
+    """
+    result = repo_tools.apply_patch(patch_text)
+    return {"patch": patch_text, **result}
+def repo_run_tests(self, command: str) -> Dict[str, Any]:
+    """
+    Run tests (default 'pytest -q' if command is empty).
+    """
+    cmd = command or "pytest -q"
+    result = repo_tools.run_tests(cmd)
+    return {"command": cmd, **result}
 
 
 # Register tools with the allowed names the planner knows about
-registry.register("repo_read_file", repo_read_file_tool)
-registry.register("repo_run_tests", repo_run_tests_tool)
-registry.register("repo_apply_patch", repo_apply_patch_tool)
+registry.register("repo_read_file", repo_read_file)
+registry.register("repo_list_files", repo_list_files)
+registry.register("repo_search_code", repo_search_code)
+registry.register("repo_apply_patch", repo_apply_patch)
+registry.register("repo_run_tests", repo_run_tests)

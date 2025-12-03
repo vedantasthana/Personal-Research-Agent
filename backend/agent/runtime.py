@@ -80,6 +80,7 @@ class AgentRuntime:
 
         # 1. Plan
         plan = self.planner.plan(user_query)
+        print("PLAN:", plan)
         action = plan["action"]
         tool_name = plan.get("tool_name")
         query = plan["query"]

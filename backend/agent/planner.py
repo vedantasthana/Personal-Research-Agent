@@ -54,8 +54,10 @@ Rules:
        - "Apply a patch to this file."
    - And you pick a tool_name from this allowed set:
        - "repo_read_file"
-       - "repo_run_tests"
+       - "repo_list_files"
+       - "repo_search_code"
        - "repo_apply_patch"
+       - "repo_run_tests"
 
 4. Never invent new tool names. If no suitable tool exists, prefer "rag_query" or "answer_direct".
 
@@ -63,7 +65,7 @@ Return STRICTLY valid JSON in this format (no comments, no extra keys):
 
 {
   "action": "answer_direct" | "rag_query" | "use_tool",
-  "tool_name": "repo_read_file" | "repo_run_tests" | "repo_apply_patch" | null,
+  "tool_name": "repo_read_file" | "repo_list_files" | "repo_search_code" | "repo_run_tests" | "repo_apply_patch" | null,
   "query": "<possibly rewritten query>",
   "reason": "<short reason>"
 }
